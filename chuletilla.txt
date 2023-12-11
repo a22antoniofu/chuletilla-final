@@ -1,0 +1,10 @@
+Se deben importar los módulos PIPE y Popen de subprocess
+Una vez importados, se genera la función
+proceso=Popen(cmd, shell=true, stderr=Pipe, stdout=Pipe)
+salida=proceso.stdout.read
+error = proceso.stderr.read
+if not error:
+print salida
+proceso.stdout.close()
+else
+return 'Error: ', error
