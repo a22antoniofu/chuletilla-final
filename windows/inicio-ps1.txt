@@ -1,0 +1,23 @@
+$servidor = "rubial"
+$dirDocumentos = "\\$servidor\documentos"
+$DirAvisos = "$dirDocumentos\avisos"
+[...]
+$usuario = $env:username
+
+# Abrir html navegador
+if (Test-path -path "$DirAvisos\aviso.html") { 
+    Invoke-Item "$DirAvisos\aviso.html" 
+}
+
+# Montar unidades red
+net use Q: $dirDocumentos /persistent:no
+
+# Si el usuario que inicia pertenece a G-Programadores o g-Directores, montar el directorio de programadores
+
+$grupos = Get-ADUser -Identity $env:username -Properties memberof
+foreach ($grupo in $grupos.memberof) {
+    if ($($grupo -eq $GProgramadores) -or $($grupo -eq $GDirectores)) { 
+        net use W: $DirBofhers /persistent:no 
+    }
+}
+ 

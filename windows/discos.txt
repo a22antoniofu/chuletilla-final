@@ -1,0 +1,24 @@
+$storagePool = "poolRubial"
+$discos = Get-PhysicalDisk -CanPool $true
+$SSS = Get-StorageSubSystem
+#Asegurar que los discos sean estos
+New-StoragePool -FriendlyName $storagePool -StorageSubSystemUniqueId $SSS.UniqueId `
+-PhysicalDisks ($discos | where {$_.DeviceId -in 1..5})
+#Añadir hotspare
+$disco5 = $discos | where {$_.DeviceId -eq 6} 
+Add-PhysicalDisk -StoragePoolFriendlyName $storagePool -PhysicalDisks $disco5 -Usage HotSpare
+
+# Discos virtuales
+# raid0
+New-VirtualDisk -StoragePoolFriendlyName $storagePool -ResiliencySettingName Simple `
+-Size 500GB -ProvisioningType Fixed -FriendlyName "Rapid" 
+
+#Parity (RAID5)
+New-VirtualDisk -StoragePoolFriendlyName $storagePool -ResiliencySettingName Parity `
+-UseMaximumSize -ProvisioningType Fixed -FriendlyName "Secure" 
+
+#Formatear un disco
+Initialize-Disk -FriendlyName "Secure" -PassThru | `
+New-Partition -DriveLetter V -UseMaximumSize
+Format-Volume -DriveLetter V -NewFileSystemLabel DATOS -FileSystem NTFS `
+-Force -Confirm:$false

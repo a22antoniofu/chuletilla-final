@@ -1,0 +1,16 @@
+- hosts: aula1
+ vars:
+ software: [figlet,tree,rdiff-backup]
+ become: yes
+ tasks:
+# - name: Comprobar que recorremos la lista
+# debug: msg="{{ item }}"
+# loop: "{{ software }}"
+ - name: Comprobar software instalado
+ shell: "apt list {{ item }}"
+ register: salida
+ loop: "{{ software }}"
+ - name: Mostrar salida
+ debug: msg="{{ item.stdout }}"
+ loop: "{{ salida.results }}"
+---

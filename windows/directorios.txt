@@ -1,0 +1,11 @@
+#Volumen V: - DATOS
+$dUsuarios = 'V:\Usuarios'
+$dDireccion = 'V:\Usuarios\Direccion'
+[...]
+
+$aDirectorios = @($dUsuarios, $dDireccion, $dDirectores, $dOficinistas, $dProgramadores, $dTecnicos, $dPerfiles, $dDocumentos, `
+        $dArchivos, , $dAvisos, $dBofhers, $dBorrase)
+#Creamos los directorios
+foreach ($directorio in $aDirectorios) {
+    New-Item -ItemType Directory -Path $directorio 
+}

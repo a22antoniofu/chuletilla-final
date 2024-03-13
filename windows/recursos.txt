@@ -1,0 +1,7 @@
+$aRecursos = @(
+   @{"directorio" = "V:\Usuarios"; "recurso" = "usuarios$"; "descripcion" = "Direct. personales de usuarios" },
+   @{"directorio" = "V:\Perfiles"; "recurso" = "perfiles$"; "descripcion" = "Perfiles móviles" },
+foreach ($r in $aRecursos) { 
+   New-SmbShare -Name $r["recurso"] -Path $r["directorio"] -FullAccess Todos `
+   -Description $r["descripcion"] -CachingMode None
+   }

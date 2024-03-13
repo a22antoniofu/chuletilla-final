@@ -1,0 +1,23 @@
+# Creación de los usuarios base
+$password = ConvertTo-SecureString "abc123.." -AsPlainText -Force
+
+# Usuario base director
+New-ADUser -Name "directorbase" -SamAccountName "directorbase" `
+-GivenName "Nombre" -SurName "Apellido" `
+–path "OU=directores,OU=direccion,OU=usuarios,OU=sl,dc=sl,dc=local" `
+-Enabled $false -AccountPassword ${password} -ChangePasswordAtLogon $true `
+-HomeDrive 'P:' -HomeDirectory '\\Rubial\usuarios$\direccion\directores\directorbase' `
+-ProfilePath '\\Rubial\perfiles$\directorbase' `
+-ScriptPath 'inicio.bat'
+
+##Crear directorio personal del usuario
+New-Item -Path 'V:\Usuarios\direccion\directores\' -Name 'directorbase' -ItemType 'directory'
+###Configurar permisos NTFS del directorio personal del usuario
+####Administradores - CT
+####Usuario dueño de ese directorio - CT
+icacls '\\Rubial\usuarios$\direccion\directores\directorbase' /inheritance:d
+icacls '\\Rubial\usuarios$\direccion\directores\directorbase' /grant:r 'directorbase:(OI)(CI)F'
+#Agregar el usuario a su grupo
+Add-ADGroupMember `
+-Identity "CN=g-directores,OU=directores,OU=direccion,OU=usuarios,OU=SL,dc=SL,dc=local" `
+-Members 'CN=directorbase,OU=directores,OU=direccion,OU=usuarios,OU=SL,dc=SL,dc=local' 

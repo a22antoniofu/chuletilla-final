@@ -1,0 +1,15 @@
+7.1.- El directorio especial Documentos debe estar “enlazado” con la carpeta personal de los Usuarios del Dominio :
+- Configuración del Usuario - Directivas - Configuración de Windows - Redirección de carpetas - Documentos - Configuración: Avanzada (especificar ubicaciones para diversos grupos de usuarios):
+Ubicación de la carpeta de destino: Redirigir el directorio particular del usuario
+· Ruta: %HOMESHARE%%HOMEPATH%
+
+7.2.- Los perfiles móviles deben poder borrarse por el administrador : 
+- Configuración del equipo - Directivas - Plantillas administrativas - Sistema/Perfiles de usuario:
+Directiva: Agregar el grupo de seguridad de administradores a los perfiles de usuarios móviles.
+    		Configuración: Habilitado.
+
+7.7.- Hacer G-Especiales Miembros Administradores Locales de los Equipos Clientes : 
+- Configuración del equipo - Directivas – Configuración de Windows – Configuración de seguridad – Grupos restringidos  :
+Acción – Agregar grupo – G-Especiales
+Configurar pertenencia a IES\G-Especiales – Este grupo es un miembro de - Administradores 
+

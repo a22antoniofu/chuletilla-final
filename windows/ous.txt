@@ -1,0 +1,48 @@
+$arbolOUs=@{ # lista
+    "equipos"=@{ # otralista
+        # Equipos cliente
+        'clientes'=@{'oficinas'=@(); 'comun'=@(); 'talleres'=@(); #`
+        'cpd'=@()}
+        # Equipos servidores
+        'servidores'=@('dc', 'nas')};
+
+###Función recursiva que se le pasa como parámetro la OU a crear y su raíz###
+function crearOU($lasOUs,$ouRaiz) {
+    #Write-Host $lasOUs.gettype().Name
+    #Si la OU a crear es una tabla hash (diccionario), se recorren sus claves 
+    #y se vuelve a llamar a sí misma 
+     if ($lasOUs.gettype().Name -eq "Hashtable") {
+     foreach ($ou in $lasOUs.keys) {
+     $nuevaOU = "ou=$ou,$ouRaiz"
+     Write-Host $nuevaOU
+     New-ADOrganizationalUnit -DisplayName $ou -Name $ou `
+    -path $ouRaiz -ProtectedFromAccidentalDeletion $false
+     crearOU $lasOUs.$ou $nuevaOU
+    }
+     }
+     #Si la OU a crear es una lista, se recorren sus elementos y se crean
+     elseif ($lasOUs.gettype().Name -eq "Object[]") {
+     foreach ($ou in $lasOUs) {
+     #Si dentro de la lista hay algún elemento que es una tabla hash,
+     #Se crean las OUs que son Keys y se sigue recorriendo
+     if ($ou.gettype().Name -eq "Hashtable") {
+     foreach ($ou in $lasOUs.keys) {
+     $nuevaOU = "ou=$ou,$ouRaiz"
+     Write-Host $nuevaOU
+     New-ADOrganizationalUnit -DisplayName $ou -Name $ou `
+    -path $ouRaiz -ProtectedFromAccidentalDeletion $false
+     crearOU $lasOUs.$ou $nuevaOU
+     }
+     #Si simplemente son elementos de una lista, se crean ya directamente
+     } else { 
+     Write-Host "ou=$ou,$ouRaiz"
+     New-ADOrganizationalUnit -DisplayName $ou -Name $ou `
+    -path $ouRaiz -ProtectedFromAccidentalDeletion $false
+     }
+     }
+     }
+    }
+    #############################################################################
+
+    # Llamada a la función crearOU
+    crearOU $arbolOUs "ou=sl,dc=sl,dc=local"

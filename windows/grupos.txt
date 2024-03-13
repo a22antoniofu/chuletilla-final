@@ -1,0 +1,22 @@
+$arbolGroups=@(
+       @{"nombre"="g-usuarios"; "ou"="usuarios";'descripcion'='Usuarios dominio SL'; "miembroDe"=""},
+       # g-direccion
+       @{'nombre'="g-direccion"; 'ou'='direccion'; 'descripcion' = 'Personal de dirección'; 'miembroDe'='g-usuarios' },
+
+#Iteramos en la lista de grupos
+foreach($grupo in $arbolGroups) {
+ #Necesitamos el DN de la OU donde vamos a guardar el Grupo
+ $laOU = Get-ADOrganizationalUnit -Filter "Name -like `'$(${grupo}.ou)`'"
+ #$laOU.DistinguishedName
+ #Ahora ya podemos dar de alta el Grupo
+ New-ADGroup -Name $(${grupo}.nombre) -SamAccountName $(${grupo}.nombre) `
+ -GroupCategory Security -GroupScope Global `
+ -DisplayName $(${grupo}.nombre) -Path $laOU.DistinguishedName `
+ -Description $(${grupo}.descripcion)
+ #Si el grupo creado está anidado en otro...
+ if ( $(${grupo}.miembroDe) -ne '' ) {
+ Add-ADGroupMember -Identity $(${grupo}.miembroDe) `
+-Members $(${grupo}.nombre)
+ }
+}
+
