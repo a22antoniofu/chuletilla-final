@@ -1,0 +1,3 @@
+@echo off
+powershell script.ps1y modificar la política a remote-signed por ejemplo con
+set-execution-policy
